@@ -15,14 +15,22 @@ public class ValidadorISBN implements ConstraintValidator<ISBN, Object> {
 	private static org.apache.commons.validator.routines.ISBNValidator
 	 validador = 
 	 new org.apache.commons.validator.routines.ISBNValidator();
-	 public void initialize(ISBN isbn) {
-	 }
+	
+	
+	private boolean buscar;
+	
+	
+	public void initialize(ISBN isbn) { 
+		 this.buscar = isbn.buscar(); 
+		 //this.buscar = isbn.buscar();
+		 }
+	
 	 
 	
 	 public boolean isValid(Object valor, ConstraintValidatorContext contexto) { 
 	 if (Is.empty(valor)) return true;
 	 if (!validador.isValid(valor.toString())) return false;
-	 return existeISBN(valor);
+	 return  buscar ? existeISBN(valor) : true;
 	 }
 
 	 private boolean existeISBN(Object isbn) {

@@ -8,6 +8,14 @@ import javax.validation.*;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ISBN {
+	
+	
+	
+		 boolean buscar() default true;
+		
+		
+	
+	
 
 	Class<?>[] groups() default{};
 	 Class<? extends Payload>[] payload() default{};
