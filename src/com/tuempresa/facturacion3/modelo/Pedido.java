@@ -3,6 +3,7 @@ package com.tuempresa.facturacion3.modelo;
 import java.time.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import org.openxava.annotations.*;
 import org.openxava.util.*;
@@ -52,17 +53,18 @@ public class Pedido extends DocumentoComercial {
 	@Column(columnDefinition="BOOLEAN DEFAULT FALSE")
 	boolean entregado;
 	
-	public void setFactura(Factura factura) {
-		 if (factura != null && !isEntregado()) { 
-		
-		 throw new javax.validation.ValidationException(
-		XavaResources.getString( 
-		"pedido_debe_estar_entregado",
-		getAnyo(),
-		getNumero())
-		);
-		 }
-		 this.factura = factura; 
-		 }
+	@AssertTrue(message="pedido_debe_estar_entregado")
+	private boolean isEntregadoParaEstarEnFactura() { 
+	return factura == null || isEntregado(); 
+			}
+	
+	@PreRemove
+	private void validarPreBorrar() {
+	 if (factura != null) { // La lógica de validación
+	 throw new javax.validation.ValidationException( // Lanza una excepción runtime
+	XavaResources.getString( // Para obtener un mensaje de texto
+	"no_puede_borrar_pedido_con_factura"));
+	 }
+	}
 	
 }
