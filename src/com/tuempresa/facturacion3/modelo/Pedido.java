@@ -12,7 +12,7 @@ import lombok.*;
 @Getter @Setter
 @View(extendsView="super.DEFAULT", 
 members=
-"diasEntregaEstimados," + 
+"diasEntregaEstimados, entregado, " +
 "factura { factura }"
 )
 @View( name="SinClienteNiFactura", 
@@ -21,6 +21,15 @@ members=
 "detalles;" +
 "observaciones"
 )
+@EntityValidator(
+		 value=com.tuempresa.facturacion.validadores.ValidadorEntregadoParaEstarEnFactura.class,
+		 properties= {
+		 @PropertyValue(name="anyo"), // El contenido de estas propiedades
+		 @PropertyValue(name="numero"), // se mueve desde la entidad 'Pedido'
+		 @PropertyValue(name="factura"), // al validador antes de
+		 @PropertyValue(name="entregado") // ejecutar la validación
+		})
+
 public class Pedido extends DocumentoComercial {
 
 	@ManyToOne
@@ -44,5 +53,8 @@ public class Pedido extends DocumentoComercial {
 	private void recalcularDiasEntrega() {
 	 setDiasEntrega(getDiasEntregaEstimados());
 	}
+	
+	@Column(columnDefinition="BOOLEAN DEFAULT FALSE")
+	boolean entregado;
 	
 }
