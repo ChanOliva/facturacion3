@@ -5,6 +5,7 @@ import java.time.*;
 import javax.persistence.*;
 
 import org.openxava.annotations.*;
+import org.openxava.util.*;
 
 import lombok.*;
 
@@ -21,14 +22,8 @@ members=
 "detalles;" +
 "observaciones"
 )
-@EntityValidator(
-		 value=com.tuempresa.facturacion.validadores.ValidadorEntregadoParaEstarEnFactura.class,
-		 properties= {
-		 @PropertyValue(name="anyo"), // El contenido de estas propiedades
-		 @PropertyValue(name="numero"), // se mueve desde la entidad 'Pedido'
-		 @PropertyValue(name="factura"), // al validador antes de
-		 @PropertyValue(name="entregado") // ejecutar la validación
-		})
+
+
 
 public class Pedido extends DocumentoComercial {
 
@@ -56,5 +51,18 @@ public class Pedido extends DocumentoComercial {
 	
 	@Column(columnDefinition="BOOLEAN DEFAULT FALSE")
 	boolean entregado;
+	
+	public void setFactura(Factura factura) {
+		 if (factura != null && !isEntregado()) { 
+		
+		 throw new javax.validation.ValidationException(
+		XavaResources.getString( 
+		"pedido_debe_estar_entregado",
+		getAnyo(),
+		getNumero())
+		);
+		 }
+		 this.factura = factura; 
+		 }
 	
 }
